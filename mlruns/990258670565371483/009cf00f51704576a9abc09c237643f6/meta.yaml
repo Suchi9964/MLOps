@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/990258670565371483/009cf00f51704576a9abc09c237643f6/artifacts
+end_time: 1766468783137
+entry_point_name: ''
+experiment_id: '990258670565371483'
+lifecycle_stage: active
+run_id: 009cf00f51704576a9abc09c237643f6
+run_name: serious-koi-57
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1766468757712
+status: 3
+tags: []
+user_id: SuchiKumari

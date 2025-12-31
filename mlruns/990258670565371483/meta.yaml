@@ -1,0 +1,6 @@
+artifact_location: mlflow-artifacts:/990258670565371483
+creation_time: 1766457268638
+experiment_id: '990258670565371483'
+last_update_time: 1766457268638
+lifecycle_stage: active
+name: nyc-taxi-experiment

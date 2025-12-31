@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/990258670565371483/7590f5c8a92141a4a9bf878b982f119f/artifacts
+end_time: 1766459392334
+entry_point_name: ''
+experiment_id: '990258670565371483'
+lifecycle_stage: active
+run_id: 7590f5c8a92141a4a9bf878b982f119f
+run_name: bedecked-wasp-734
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1766459342787
+status: 3
+tags: []
+user_id: SuchiKumari

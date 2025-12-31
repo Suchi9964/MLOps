@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/990258670565371483/b3892f023796414eb7a61cf3378a5b6c/artifacts
+end_time: 1766457669335
+entry_point_name: ''
+experiment_id: '990258670565371483'
+lifecycle_stage: active
+run_id: b3892f023796414eb7a61cf3378a5b6c
+run_name: likeable-horse-529
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1766457623932
+status: 3
+tags: []
+user_id: SuchiKumari
