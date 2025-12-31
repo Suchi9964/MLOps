@@ -29,13 +29,15 @@ def run_train(data_path: str):
     mlflow.set_experiment("random-forest-taxi")
     mlflow.sklearn.autolog()
 
-    rf = RandomForestRegressor(max_depth=10, random_state=0)
-    rf.fit(X_train, y_train)
-    y_pred = rf.predict(X_val)
 
-    rmse = root_mean_squared_error(y_val, y_pred)
-    mlflow.log_metric("rmse", rmse)
+    with mlflow.start_run():
+        rf = RandomForestRegressor(max_depth=10, random_state=0)
+        rf.fit(X_train, y_train)
+        y_pred = rf.predict(X_val)
 
+
+        rmse = root_mean_squared_error(y_val, y_pred)
+        mlflow.log_metric("rmse", rmse)
 
 if __name__ == '__main__':
     run_train()
