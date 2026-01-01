@@ -29,16 +29,7 @@ def train_and_log_model(data_path, params):
 
     with mlflow.start_run():
         new_params = {}
-        for param in RF_PARAMS:
-            value = params.get(param)
 
-            if value is None or value == "None":
-                new_params[param] = None
-            else:
-                try:
-                    new_params[param] = int(float(value))
-                except ValueError:
-                    new_params[param] = value
 
         rf = RandomForestRegressor(**new_params)
         rf.fit(X_train, y_train)
@@ -48,6 +39,8 @@ def train_and_log_model(data_path, params):
         mlflow.log_metric("val_rmse", val_rmse)
         test_rmse = root_mean_squared_error(y_test, rf.predict(X_test))
         mlflow.log_metric("test_rmse", test_rmse)
+
+
 
 
 @click.command()
@@ -66,7 +59,7 @@ def run_register_model(data_path: str, top_n: int):
 
     client = MlflowClient()
 
-    # Retrieve the top_n model runs and log the models
+    # Step 1: get top N runs from HPO experiment
     experiment = client.get_experiment_by_name(HPO_EXPERIMENT_NAME)
     runs = client.search_runs(
         experiment_ids=experiment.experiment_id,
@@ -74,21 +67,35 @@ def run_register_model(data_path: str, top_n: int):
         max_results=top_n,
         order_by=["metrics.rmse ASC"]
     )
-    run_metrics = []
+
+    # Step 2: retrain & log models
     for run in runs:
-        print("*************** printing params *********************")
-        print("printing params:", run.data.params)
-        run_id, test_rmse = train_and_log_model(data_path, run.data.params)
-        run_metrics.append((run_id, test_rmse))
+        train_and_log_model(data_path=data_path, params=run.data.params)
 
+    # Step 3: find best model by test RMSE
+    experiment = client.get_experiment_by_name(EXPERIMENT_NAME)
 
-    best_run_id, best_rmse = min(run_metrics, key=lambda x: x[1])
-    print(f"Best run: {best_run_id} with test RMSE: {best_rmse}")
+    best_run = client.search_runs(
+        experiment_ids=experiment.experiment_id,
+        run_view_type=ViewType.ACTIVE_ONLY,
+        max_results=1,
+        order_by=["metrics.test_rmse ASC"]
+    )[0]
 
+    best_run_id = best_run.info.run_id
+    best_test_rmse = best_run.data.metrics["test_rmse"]
 
+    print(f"Best run_id: {best_run_id}")
+    print(f"Best test RMSE: {best_test_rmse}")
+
+    # Step 4: register model
     model_uri = f"runs:/{best_run_id}/model"
-    registered_model = mlflow.register_model(model_uri=model_uri, name=MODEL_NAME)
-    print(f"Model registered with name: {registered_model.name} and version: {registered_model.version}")
+
+    mlflow.register_model(
+        model_uri=model_uri,
+        name="random-forest-nyc-taxi"
+    )
+
 
 if __name__ == '__main__':
-    run_register_model()
+    run_register_model()    
